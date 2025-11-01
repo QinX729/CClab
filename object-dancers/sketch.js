@@ -10,7 +10,7 @@
   5. have fun.
 */
 
-let dancer;
+let doudou;
 
 function setup() {
   // no adjustments in the setup function needed...
@@ -18,7 +18,7 @@ function setup() {
   canvas.parent("p5-canvas-container");
 
   // ...except to adjust the dancer's name on the next line:
-  dancer = new Doudou(width / 2, height / 2, 0);
+  doudou = new Doudou(width / 2, height / 2, 0);
 }
 
 function draw() {
@@ -26,7 +26,7 @@ function draw() {
   background(0);
   drawFloor(); // for reference only
 
-  dancer.display();
+  doudou.display();
 }
 
 // You only code inside this class.
