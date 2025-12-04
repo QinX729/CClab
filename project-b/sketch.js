@@ -1,6 +1,6 @@
 let doudous = [];
-let ininum = 5;
-let maxNum = 40;
+let ininum = 10;
+let maxNum = 80;
 let dous = [];
 let change = 0;
 let handPose;
@@ -18,7 +18,7 @@ function preload() {
 }
 
 function setup() {
-  let canvas = createCanvas(800, 500);
+  let canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent("p5-canvas-container");
 
 // Create & hide the video
