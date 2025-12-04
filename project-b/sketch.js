@@ -46,6 +46,9 @@ function windowResized() {
 function draw() {
   background(220);
 
+  //tell me write me
+  
+
   //center dou
   for (let i = 0; i < dous.length; i++) {
     dous[i].display();
