@@ -12,6 +12,14 @@ let handVelX = 0;
 let handVelY = 0;
 let handX = null;
 let handY = null;
+let words = ["show me", "write me", "tell me"];
+let currentIndex = -1;
+let wordY;
+let transparency = 0;
+let state = "rest";
+let typedChars = [];
+let typedTextObj;
+let typeState = "rest";
 
 function preload() {
   handPose = ml5.handPose();
@@ -20,6 +28,11 @@ function preload() {
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight);
   canvas.parent("p5-canvas-container");
+  
+  typedTextObj = new RisingTypes();
+
+  textFont("Amatic SC");
+  wordY = height/4;
 
 // Create & hide the video
   video = createCapture(VIDEO);
@@ -27,12 +40,12 @@ function setup() {
   video.hide();
   handPose.detectStart(video, gotHands);
 
-  //little doudou
+  // little doudou
   for (i = 0; i < ininum; i++) {
     doudous.push(new doudou());
   }
 
-  //center dou
+  // center dou
   for (let i = 0; i < 300; i++) {
     dous.push(new dou(0.15 * i, i * 0.5));
   }
@@ -46,14 +59,38 @@ function windowResized() {
 function draw() {
   background(220);
 
-  //tell me write me
+  // click for more
+  textSize(24);
+  fill(0);
+  text("click for more", 55, 20);
+
+  // show me write me tell me
+  textAlign(CENTER, CENTER);
   textSize(48);
-  textFont("Amatic SC");
-  fill (0);
-  text("tell me, write me", width/2 - 120, height/4);
+  // animation
+if (state === "fadeIn") {
+  transparency += 5;
+  wordY -= 0.5;
+  if (transparency >= 255) {
+    transparency = 255;
+    state = "rest";
+  }
+}
 
+else if (state === "fadeOut") {
+  transparency -= 5;
+  wordY -= 1;
+  if (transparency <= 0) {
+    transparency = 0;
+    currentIndex = (currentIndex + 1) % words.length;
+    wordY = height/4;
+    state = "fadeIn";
+  }
+}
+fill(0, transparency);
+text(words[currentIndex], width/2, wordY);
 
-  //center dou
+  // center dou
   for (let i = 0; i < dous.length; i++) {
     dous[i].display();
   }
@@ -76,7 +113,7 @@ function draw() {
     prevHandY = handY;
   }
 
-  //add new doudou
+  // add new doudou
   if (doudous.length < maxNum && frameCount % 20 == 0) {
     doudous.push(new doudou());
   }
@@ -123,6 +160,24 @@ function draw() {
       circle(keypoint.x, keypoint.y, 10);
     }
   }
+
+  // display typed text
+if (typeState === "fadeIn") {
+  typedTextObj.fadeIn();
+  typedTextObj.display(typedChars);
+}
+
+else if (typeState === "fadeOut") {
+  typedTextObj.fadeOut();
+  typedTextObj.display(typedChars);
+
+  if (typedTextObj.transparency <= 0) {
+    typedChars = [];   // clear previous word
+    typeState = "rest";
+    typedTextObj = new RisingTypes();
+  }
+}
+
 }
 
 class doudou {
@@ -162,11 +217,10 @@ class doudou {
       this.y += handVelY * 0.2;
     }
 
-    // A tiny random wiggle to keep things lively
     this.x += random(-0.3, 0.3);
     this.y += random(-0.3, 0.3);
 
-    //movement when no hand
+    // movement when no hand
     let centerD = dist(width / 2, height / 2, this.x, this.y);
 
     if (centerD < 3) {
@@ -238,6 +292,66 @@ class dou {
   }
 }
 
+class RisingTypes {
+  constructor() {
+    this.y = height/4;
+    this.transparency = 0;
+
+    this.targetY = 3*height/8;  // resting place
+    this.fadeOutSpeed = 5;
+  }
+
+  fadeIn() {
+    this.transparency += 10;
+    this.y = lerp(this.y, this.targetY, 0.05);  // smooth rise
+
+    if (this.transparency >= 255) {
+      this.transparency = 255;
+    }
+  }
+
+  fadeOut() {
+    this.transparency -= this.fadeOutSpeed;
+
+    if (this.transparency <= 0) {
+      this.transparency = 0;
+    }
+  }
+
+  display(chars) {
+    fill(0, this.transparency);
+    textAlign(CENTER, CENTER);
+    textSize(48);
+
+    // Draw the entire typed string at once
+    text(chars.join(""), width/2, this.y);
+  }
+}
+
+
+function keyTyped() {
+  // Clear default phrase animation whenever the user types
+  if (state !== "fadeOut") {
+    state = "rest";
+    transparency = 0;
+  }
+
+  // Add typed character
+  typedChars.push(key);
+  typeState = "fadeIn";
+}
+
+
 function gotHands(results) {
   hands = results;
+}
+
+function mousePressed() {
+  if (state === "rest") {
+    state = "fadeOut";
+  }
+
+  if (typedChars.length > 0 && typeState !== "fadeOut") {
+    typeState = "fadeOut";
+  }
 }
