@@ -47,7 +47,11 @@ function draw() {
   background(220);
 
   //tell me write me
-  
+  textSize(48);
+  textFont("Amatic SC");
+  fill (0);
+  text("tell me, write me", width/2 - 120, height/4);
+
 
   //center dou
   for (let i = 0; i < dous.length; i++) {
