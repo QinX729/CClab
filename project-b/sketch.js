@@ -23,7 +23,7 @@ function setup() {
 
 // Create & hide the video
   video = createCapture(VIDEO);
-  video.size(640, 480);
+  video.size(windowWidth, windowHeight);
   video.hide();
   handPose.detectStart(video, gotHands);
 
@@ -37,6 +37,10 @@ function setup() {
     dous.push(new dou(0.15 * i, i * 0.5));
   }
 
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
@@ -85,10 +89,10 @@ function draw() {
       }
 
       if (
-        doudous[i].x >= 395 &&
-        doudous[i].x <= 405 &&
-        doudous[i].y >= 245 &&
-        doudous[i].y <= 255 &&
+        doudous[i].x >= width/2 - 5 &&
+        doudous[i].x <= width/2 + 5 &&
+        doudous[i].y >= height/2 - 5 &&
+        doudous[i].y <= height/2 + 5 &&
         doudous[i].s < 0.5
       ) {
         doudous.splice(i, 1);
@@ -116,8 +120,8 @@ function draw() {
 
 class doudou {
   constructor(x, y, s, shade, theta) {
-    this.x = random(300, 500);
-    this.y = random(150, 350);
+    this.x = random(width/2 - 100, width/2 + 100);
+    this.y = random(height/2 - 100, height/2 + 100);
     this.s = random(5, 10);
     this.shade = random(50, 200);
     this.theta = random(0, 0.5 * PI);
@@ -197,7 +201,7 @@ class dou {
 
   display() {
     push();
-    translate(400, 250);
+    translate(width/2, height/2);
     noStroke();
     if (this.alpha <= 8) {
       this.alpha += 0.01;
