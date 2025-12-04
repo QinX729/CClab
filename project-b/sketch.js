@@ -1,8 +1,11 @@
+// particles
 let doudous = [];
 let ininum = 10;
 let maxNum = 80;
 let dous = [];
 let change = 0;
+
+// hand interaction
 let handPose;
 let hands = [];
 let video;
@@ -12,6 +15,9 @@ let handVelX = 0;
 let handVelY = 0;
 let handX = null;
 let handY = null;
+
+
+// typing
 let words = ["show me", "write me", "tell me"];
 let currentIndex = -1;
 let wordY;
@@ -20,6 +26,9 @@ let state = "rest";
 let typedChars = [];
 let typedTextObj;
 let typeState = "rest";
+
+// voice recognition
+let speechRecognition;
 
 function preload() {
   handPose = ml5.handPose();
@@ -34,7 +43,7 @@ function setup() {
   textFont("Amatic SC");
   wordY = height/4;
 
-// Create & hide the video
+// create & hide the video
   video = createCapture(VIDEO);
   video.size(windowWidth, windowHeight);
   video.hide();
@@ -171,8 +180,9 @@ else if (typeState === "fadeOut") {
   typedTextObj.fadeOut();
   typedTextObj.display(typedChars);
 
+  // clear previous word
   if (typedTextObj.transparency <= 0) {
-    typedChars = [];   // clear previous word
+    typedChars = [];   
     typeState = "rest";
     typedTextObj = new RisingTypes();
   }
@@ -347,11 +357,43 @@ function gotHands(results) {
 }
 
 function mousePressed() {
+  // words cycle
   if (state === "rest") {
     state = "fadeOut";
   }
 
+  // if typed/ speech text exists, fade out
   if (typedChars.length > 0 && typeState !== "fadeOut") {
     typeState = "fadeOut";
   }
+
+  // start microphone listening
+  setupSpeechRecognition();
+  speechRecognition.abort();
+  speechRecognition.start();
+}
+
+function setupSpeechRecognition() {
+  if (speechRecognition)
+    return; // already set up
+  let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  speechRecognition = new SpeechRecognition();
+  speechRecognition.lang = "en-US";
+  speechRecognition.lang = "zh-CN";
+  speechRecognition.continuous = false;
+  speechRecognition.interimResults = false;
+  speechRecognition.onresult = gotRecognitionResult;
+}
+
+function loadRecognizedText(str) {
+  typedChars = str.split("");        // convert string → array of characters
+  typedTextObj = new RisingTypes();  // reset animation
+  typeState = "fadeIn";              // start fade-in animation
+}
+
+
+function gotRecognitionResult(event) {
+  let speechText = event.results[0][0].transcript;
+  console.log("Recognized:", speechText);
+  loadRecognizedText(speechText);
 }
