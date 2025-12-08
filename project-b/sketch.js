@@ -3,6 +3,10 @@ let ruinImgs = [];
 let scrollProgress = 0;
 let ruinY = 0;
 
+// 3 modes
+let mode = "show";
+let isListening = false;
+
 // particles
 let doudous = [];
 let ininum = 10;
@@ -138,6 +142,23 @@ if (activeRuinIndex < ruinImgs.length) {
   // show me write me tell me
   textAlign(CENTER, CENTER);
   textSize(48);
+
+  // hint
+  textSize(20);
+fill(0);
+textAlign(CENTER);
+
+if (mode === "show") {
+  text("wave your hand in front of the camera", width/2, height - 100);
+}
+else if (mode === "write") {
+  text("type something; press ENTER to erase", width/2, height - 100);
+}
+else if (mode === "tell") {
+  text("say something; press SPACE to start/stop recording", width/2, height - 100);
+}
+
+
   // animation
 if (state === "fadeIn") {
   transparency += 5;
@@ -402,29 +423,37 @@ class RisingTypes {
 
 
 function keyTyped() {
+  if (mode !== "write") return; // could only type in write me mode
+
   typedChars.push(key.toLowerCase());
   typeState = "fadeIn";
 }
+
 
 function gotHands(results) {
   hands = results;
 }
 
 function mousePressed() {
-  // words cycle
-  if (state === "rest") {
-    state = "fadeOut";
+  // cycle mode
+  currentIndex = (currentIndex + 1) % words.length;
+
+  if (currentIndex === 0) mode = "show";
+  if (currentIndex === 1) mode = "write";
+  if (currentIndex === 2) mode = "tell";
+
+  // reset states when switching
+  typedChars = [];
+  typeState = "rest";
+  typedTextObj = new RisingTypes();
+
+  // stop voice if switching away from tell
+  if (mode !== "tell" && isListening) {
+    speechRecognition.stop();
+    isListening = false;
   }
 
-  // if typed/ speech text exists, fade out
-  if (typedChars.length > 0 && typeState !== "fadeOut") {
-    typeState = "fadeOut";
-  }
-
-  // start microphone listening
-  setupSpeechRecognition();
-  speechRecognition.abort();
-  speechRecognition.start();
+  console.log("Mode:", mode);
 }
 
 function setupSpeechRecognition() {
@@ -457,10 +486,20 @@ function gotRecognitionResult(event) {
 }
 
 function keyPressed() {
+
+  // ENTER = erase / emoji
   if (keyCode === ENTER) {
-    processTypedWord();
+    if (typedChars.length > 0) {
+      processTypedWord();
+    }
+  }
+
+  // SPACE = voice toggle
+  if (key === " ") {
+    if (mode === "tell") toggleVoice();
   }
 }
+
 
 function processTypedWord() {
   let typedString = typedChars.join("");
@@ -477,4 +516,15 @@ function processTypedWord() {
     typedTextObj = new RisingTypes();
     typeState = "fadeIn";
   }, 300);
+}
+
+function toggleVoice() {
+  if (!isListening) {
+    setupSpeechRecognition();
+    speechRecognition.start();
+    isListening = true;
+  } else {
+    speechRecognition.stop();
+    isListening = false;
+  }
 }
