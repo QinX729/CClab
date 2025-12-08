@@ -139,20 +139,20 @@ if (activeRuinIndex < ruinImgs.length) {
   fill(0);
   text("click for more", 80, 30);
 
-  // show me write me tell me
+  // show/write/tell me
   textAlign(CENTER, CENTER);
   textSize(48);
 
   // hint
   textSize(32);
-fill(0);
-textAlign(CENTER);
+  fill(0);
+  textAlign(CENTER);
 
 if (mode === "show") {
   text("wave your hand in front of the camera", width/2, height - 100);
 }
 else if (mode === "write") {
-  text("type something; press ENTER to erase", width/2, height - 100);
+  text("type something; press ENTER to see more; press BACKSPACE to erase", width/2, height - 100);
 }
 else if (mode === "tell") {
   text("say something; press SPACE to start/stop recording", width/2, height - 100);
@@ -179,6 +179,7 @@ else if (state === "fadeOut") {
     state = "fadeIn";
   }
 }
+textSize(56);
 fill(0, transparency);
 text(words[currentIndex], width/2, wordY);
 
@@ -442,10 +443,15 @@ function mousePressed() {
   if (currentIndex === 1) mode = "write";
   if (currentIndex === 2) mode = "tell";
 
-  // reset states when switching
+  // reset typed text
   typedChars = [];
   typeState = "rest";
   typedTextObj = new RisingTypes();
+
+  // restart the floating fade animation
+  transparency = 0;
+  wordY = height/4;
+  state = "fadeIn";
 
   // stop voice if switching away from tell
   if (mode !== "tell" && isListening) {
@@ -455,6 +461,7 @@ function mousePressed() {
 
   console.log("Mode:", mode);
 }
+
 
 function setupSpeechRecognition() {
   if (speechRecognition)
@@ -498,6 +505,16 @@ function keyPressed() {
   if (key === " ") {
     if (mode === "tell") toggleVoice();
   }
+
+  // BACKSPACE = erase in write mode
+if (keyCode === BACKSPACE && mode === "write") {
+  if (typedChars.length > 0) {
+    typedChars.pop();
+    typeState = "fadeIn";
+  }
+  return false;
+}
+
 }
 
 
