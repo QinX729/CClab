@@ -124,10 +124,10 @@ if (activeRuinIndex < ruinImgs.length) {
   image(ruinImgs[activeRuinIndex], width/2, height/2 + ruinYOffset, width, height);
   pop();
 
-  fill(50, ruinOpacity);
+  fill(255, ruinOpacity);
   textAlign(CENTER);
-  textSize(24);
-  text("scroll down", width/2, height - 80);
+  textSize(32);
+  text("scroll down", width/2, height - 100);
 
   // Stop drawing rest of creature world until ruins are done
   if (activeRuinIndex < ruinImgs.length - 1) {
@@ -135,16 +135,16 @@ if (activeRuinIndex < ruinImgs.length) {
   }
 }
   // click for more
-  textSize(24);
+  textSize(32);
   fill(0);
-  text("click for more", 55, 20);
+  text("click for more", 80, 30);
 
   // show me write me tell me
   textAlign(CENTER, CENTER);
   textSize(48);
 
   // hint
-  textSize(20);
+  textSize(32);
 fill(0);
 textAlign(CENTER);
 
