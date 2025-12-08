@@ -3,7 +3,6 @@ let ruinImgs = [];
 let scrollProgress = 0;
 let ruinY = 0;
 
-
 // particles
 let doudous = [];
 let ininum = 10;
@@ -22,7 +21,6 @@ let handVelY = 0;
 let handX = null;
 let handY = null;
 
-
 // typing
 let words = ["show me", "write me", "tell me"];
 let currentIndex = -1;
@@ -35,6 +33,17 @@ let typeState = "rest";
 
 // voice recognition
 let speechRecognition;
+
+// special return
+let emojiMap = {
+  "water": "💧",
+  "fire": "🔥",
+  "sun": "☀️",
+  "tree": "🌳",
+  "love": "❤️",
+  "rain": "🌧️"
+};
+
 
 function preload() {
   handPose = ml5.handPose();
@@ -393,17 +402,9 @@ class RisingTypes {
 
 
 function keyTyped() {
-  // Clear default phrase animation whenever the user types
-  if (state !== "fadeOut") {
-    state = "rest";
-    transparency = 0;
-  }
-
-  // Add typed character
-  typedChars.push(key);
+  typedChars.push(key.toLowerCase());
   typeState = "fadeIn";
 }
-
 
 function gotHands(results) {
   hands = results;
@@ -432,21 +433,48 @@ function setupSpeechRecognition() {
   let SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   speechRecognition = new SpeechRecognition();
   speechRecognition.lang = "en-US";
-  speechRecognition.lang = "zh-CN";
+  // speechRecognition.lang = "zh-CN";
   speechRecognition.continuous = false;
   speechRecognition.interimResults = false;
   speechRecognition.onresult = gotRecognitionResult;
 }
 
 function loadRecognizedText(str) {
-  typedChars = str.split("");        // convert string → array of characters
-  typedTextObj = new RisingTypes();  // reset animation
-  typeState = "fadeIn";              // start fade-in animation
-}
 
+  let words = str.toLowerCase().split(" ");
+  let result = words.map(w => emojiMap[w] ? emojiMap[w] : w);
+  let finalText = result.join(" ");
+
+  typedChars = finalText.split(""); 
+  typedTextObj = new RisingTypes();
+  typeState = "fadeIn";
+}
 
 function gotRecognitionResult(event) {
   let speechText = event.results[0][0].transcript;
   console.log("Recognized:", speechText);
   loadRecognizedText(speechText);
+}
+
+function keyPressed() {
+  if (keyCode === ENTER) {
+    processTypedWord();
+  }
+}
+
+function processTypedWord() {
+  let typedString = typedChars.join("");
+  typedString = typedString.toLowerCase();
+
+  typeState = "fadeOut";
+
+  setTimeout(() => {
+    let words = typedString.split(" ");
+    let result = words.map(w => emojiMap[w] ? emojiMap[w] : w);
+    let finalText = result.join(" ");
+
+    typedChars = finalText.split(""); 
+    typedTextObj = new RisingTypes();
+    typeState = "fadeIn";
+  }, 300);
 }
