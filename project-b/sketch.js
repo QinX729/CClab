@@ -48,7 +48,8 @@ let emojiMap = {
   "rain": "🌧️",
   "christmas": "🎄",
   "friends": "🫂",
-  "you": "🫵"
+  "you": "🫵",
+  "earth": "🌏",
 };
 
 
