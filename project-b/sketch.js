@@ -1,3 +1,9 @@
+// backgrounds
+let ruinImgs = [];
+let scrollProgress = 0;
+let ruinY = 0;
+
+
 // particles
 let doudous = [];
 let ininum = 10;
@@ -32,7 +38,36 @@ let speechRecognition;
 
 function preload() {
   handPose = ml5.handPose();
+
+  // load ruin images
+  ruinImgs[0] = loadImage("ruins-1.png");
+  ruinImgs[1] = loadImage("ruins-2.png");
+  ruinImgs[2] = loadImage("ruins-3.png");
 }
+
+// backgrounds
+let activeRuinIndex = 0;
+let ruinOpacity = 255;
+let ruinYOffset = 0;
+
+function mouseWheel(event) {
+  // scroll upward fades ruins upward
+  ruinYOffset += event.delta / 4; 
+  if (event.delta > 0) {
+  ruinOpacity -= event.delta * 0.2;
+}
+
+  // When one ruin fades completely, move to next
+  if (ruinOpacity <= 0 && activeRuinIndex < ruinImgs.length - 1) {
+    activeRuinIndex++;
+    ruinOpacity = 255;
+    ruinYOffset = 0;
+  }
+
+  // Prevent page scrolling
+  return false;
+}
+
 
 function setup() {
   let canvas = createCanvas(windowWidth, windowHeight);
@@ -68,6 +103,24 @@ function windowResized() {
 function draw() {
   background(220);
 
+  // backgrounds
+if (activeRuinIndex < ruinImgs.length) {
+  push();
+  tint(255, ruinOpacity);
+  imageMode(CENTER);
+  image(ruinImgs[activeRuinIndex], width/2, height/2 + ruinYOffset, width, height);
+  pop();
+
+  fill(50, ruinOpacity);
+  textAlign(CENTER);
+  textSize(24);
+  text("scroll down", width/2, height - 80);
+
+  // Stop drawing rest of creature world until ruins are done
+  if (activeRuinIndex < ruinImgs.length - 1) {
+    return;
+  }
+}
   // click for more
   textSize(24);
   fill(0);
