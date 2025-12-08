@@ -45,7 +45,10 @@ let emojiMap = {
   "sun": "☀️",
   "tree": "🌳",
   "love": "❤️",
-  "rain": "🌧️"
+  "rain": "🌧️",
+  "christmas": "🎄",
+  "friends": "🫂",
+  "you": "🫵"
 };
 
 
