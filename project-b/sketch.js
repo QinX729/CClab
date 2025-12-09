@@ -46,7 +46,7 @@ let emojiMap = {
   "tree": "🌳",
   "love": "❤️",
   "rain": "🌧️",
-  "christmas": "🎄",
+  "new-year": "🏮🍊🧧🐎🪭🧨",
   "friends": "🫂",
   "you": "🫵",
   "earth": "🌏",
