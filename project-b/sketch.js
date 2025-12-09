@@ -53,7 +53,10 @@ let emojiMap = {
   "location": "earth",
   "hello": "👋",
   "i": "...? what is that?",
-  "name": "...? i don't remember..."
+  "name": "...? i don't remember...",
+  "wind": "💨",
+  "electricity": "⚡",
+  "cclab": "🤯🌪️⋆·˚ ༘ *⚠️💣💥🤗🦾🤖"
 };
 
 
