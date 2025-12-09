@@ -52,8 +52,8 @@ let emojiMap = {
   "earth": "🌏",
   "location": "earth",
   "hello": "👋",
-  "i": "...?",
-  "name": "...?"
+  "i": "...? what is that?",
+  "name": "...? i don't remember..."
 };
 
 
