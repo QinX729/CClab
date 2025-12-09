@@ -50,6 +50,7 @@ let emojiMap = {
   "friends": "🫂",
   "you": "🫵",
   "earth": "🌏",
+  "name": "earth"
 };
 
 
