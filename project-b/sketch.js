@@ -50,8 +50,10 @@ let emojiMap = {
   "friends": "🫂",
   "you": "🫵",
   "earth": "🌏",
-  "name": "earth",
-  "hello": "👋"
+  "location": "earth",
+  "hello": "👋",
+  "i": "...?",
+  "name": "...?"
 };
 
 
@@ -500,19 +502,19 @@ function gotRecognitionResult(event) {
 
 function keyPressed() {
 
-  // ENTER - erase / emoji
+  // enter - erase / emoji
   if (keyCode === ENTER) {
     if (typedChars.length > 0) {
       processTypedWord();
     }
   }
 
-  // SPACE - voice recog
+  // space - voice recog
   if (key === " ") {
     if (mode === "tell") startVoice();
   }
 
-  // BACKSPACE - erase in write mode
+  // backspace - erase in write mode
 if (keyCode === BACKSPACE && mode === "write") {
   if (typedChars.length > 0) {
     typedChars.pop();
@@ -521,7 +523,7 @@ if (keyCode === BACKSPACE && mode === "write") {
   return false;
 }
 
-  // BACKSPACE - erase in tell mode
+  // backspace - erase in tell mode
 if (keyCode === BACKSPACE && mode === "tell") {
   if (typedChars.length > 0) {
     typedChars.pop();
