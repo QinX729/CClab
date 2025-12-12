@@ -204,8 +204,9 @@ text(words[currentIndex], width/2, wordY);
   // handmovement
   if (hands.length > 0) {
     let kp = hands[0].keypoints[5];
-    handX = kp.x;
+    handX = width - kp.x; 
     handY = kp.y;
+
 
     // compute hand movement speed (wind direction)
     if (prevHandX !== null) {
@@ -261,7 +262,7 @@ text(words[currentIndex], width/2, wordY);
       let keypoint = hand.keypoints[j];
       fill(0, 255, 0);
       noStroke();
-      circle(keypoint.x, keypoint.y, 10);
+      circle(width - keypoint.x, keypoint.y, 10);
     }
   }
 
@@ -314,12 +315,13 @@ class doudou {
           dy /= m;
         }
         // push it away
-        this.x += dx * 3;
-        this.y += dy * 3;
+        this.x = lerp(this.x, this.x + dx * 20, 0.2);
+        this.y = lerp(this.y, this.y + dy * 20, 0.2);
       }
 
-      this.x += handVelX * 0.2;
-      this.y += handVelY * 0.2;
+      this.x = lerp(this.x, this.x + handVelX * 2, 0.1);
+      this.y = lerp(this.y, this.y + handVelY * 2, 0.1);
+
     }
 
     this.x += random(-0.3, 0.3);
